@@ -4,14 +4,34 @@
 
 <img src="https://raw.githubusercontent.com/droserasprout/io.drsr.prexcompat/main/oops.png" width=200 align=right alt="Algo salió mal screen">
 
-Xposed module to make the [Prex Uruguay](https://play.google.com/store/apps/details?id=air.Prex) app work on de-googled / rooted devices. Two patches:
+Xposed module to make the [Prex Uruguay](https://play.google.com/store/apps/details?id=air.Prex) app work on de-googled / rooted devices.
+
+## Hooks
 
 - **RootHook** — forces RootBeer (`com.scottyab.rootbeer`) and IRoot (`de.cyberkatze.iroot`) checks to "not rooted", suppressing "Dispositivo está rooteado" rejection on startup.
 - **FirebaseFix** — makes the Capacitor Firebase plugin's `getAppInstanceId` resolve a stable non-empty string, so the `Device-Firebase-Instance-Id` request header isn't null. Without this, the login POST is rejected client-side and the app shows "Algo salió mal" (likely a bug, introduced around `10.70.00`).
 
-Tested on Android 15 + Magisk + Zygisk + LSPosed, should work on other configurations.
+### KYC
 
-NOT tested on other regional variants — [Argentina](https://play.google.com/store/apps/details?id=air.PrexArgentina), [Chile](https://play.google.com/store/apps/details?id=air.PrexChile), [Peru](https://play.google.com/store/apps/details?id=air.PrexPeru).
+> ⚠️ This module does not touch the document classifier or anything uploaded to Incode — only disables the **local** root/hook check. Your real ID is scanned and sent unchanged.
+
+Prex has ID verification via the Incode Welcome SDK, whose anti-tamper layer detects Xposed and throws `DeviceEnvironmentException` right after capture ("No se pudo validar tu identidad") despite successful upload (I've got `cls: 0.99, frameScore: 2.89, isSuccessful: true` on first attempt)
+
+- **IncodeHook** — no-ops the SDK's environment gate (`com.incode.welcome_sdk.commons.utils.n#d`), which throws on emulator / hooking framework / virtual environment / root. Obfuscated name is version-specific.
+
+Oh the irony, "Welcome SDK" that tells you're not welcome.
+
+## Tested configurations
+
+Tested on Android 15/16 (LineageOS) + Magisk + Zygisk + LSPosed, should work on other configurations. Additional root hiding solutions like Shamiko are not required, but don't interfere either.
+
+App versions:
+
+- `10.69.01` - Worked without Firebase fix. Now disabled by Prex.
+- `10.72.00` - Active, tested with PrexCompat.
+- `10.74.00` - Active, tested with PrexCompat.
+
+Not tested on other regional variants — [Argentina](https://play.google.com/store/apps/details?id=air.PrexArgentina), [Chile](https://play.google.com/store/apps/details?id=air.PrexChile), [Peru](https://play.google.com/store/apps/details?id=air.PrexPeru). PRs are welcome.
 
 ## Source
 
