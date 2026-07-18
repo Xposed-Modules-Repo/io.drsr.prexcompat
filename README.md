@@ -23,6 +23,8 @@ Oh the irony, "Welcome SDK" that tells you're not welcome.
 
 ## Tested configurations
 
+Built against the [modern Xposed API](https://github.com/libxposed/api) (`minApiVersion=101`), so it requires an LSPosed build that supports the modern API. Older Xposed/EdXposed and pre-modern-API LSPosed releases will not load it.
+
 Tested on Android 15/16 (LineageOS) + Magisk + Zygisk + LSPosed, should work on other configurations. Additional root hiding solutions like Shamiko are not required, but don't interfere either.
 
 App versions:
@@ -39,7 +41,7 @@ Not tested on other regional variants — [Argentina](https://play.google.com/st
 
 ## Install
 
-Install the APK, enable the module in LSPosed with scope `air.Prex`, force-stop the app. If you're running Magisk with "Enforce DenyList" enabled — remove Prex from this list to allow Xposed injection.
+Install the APK, enable the module in LSPosed, force-stop the app. Scope is fixed to `air.Prex` (`staticScope=true`), so no manual scope selection is needed. If you're running Magisk with "Enforce DenyList" enabled — remove Prex from this list to allow Xposed injection.
 
 ## License
 
